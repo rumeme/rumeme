@@ -10,4 +10,5 @@ group :test do
   gem 'webmock'
   gem 'vcr'
   gem 'coveralls', require: false
+  gem 'rubocop', '>= 0.24', require: false
 end

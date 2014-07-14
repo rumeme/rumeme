@@ -1,0 +1,17 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  Include:
+    - 'rumeme.gemspec'
+  Exclude:
+    - 'Gemfile'
+    - 'Rakefile'
+    - spec/**/*
+
+Style/CaseIndentation:
+  IndentWhenRelativeTo: end
+  IndentOneStep: true
+
+# Don't require utf-8 encoding comment at the top of every file
+Encoding:
+  Enabled: false
