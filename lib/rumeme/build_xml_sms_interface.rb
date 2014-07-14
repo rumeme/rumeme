@@ -50,7 +50,7 @@ module Rumeme
     def get_blocked_numbers(max_results = false)
       body_xml = ''
       if max_results
-        body_xml += " <maximumRecipients>#{max_results}</maximumRecipients>"
+        body_xml << " <maximumRecipients>#{max_results}</maximumRecipients>"
       end
       build_xml('getBlockedNumbers', body_xml)
     end
@@ -62,16 +62,16 @@ module Rumeme
       recipients_body_xml = '<recipients>'
       numbers.each do |number|
         # start the XML block
-        recipients_body_xml += "\n    <recipient"
+        recipients_body_xml << "\n    <recipient"
         # individual numbers and (optional) UIDs
         if number.is_a? Hash
-          recipients_body_xml += " uid=\"#{number[:uid]}\""
+          recipients_body_xml << " uid=\"#{number[:uid]}\""
           number = number[:number]
         end
-        recipients_body_xml += ">#{number}</recipient>"
+        recipients_body_xml << ">#{number}</recipient>"
       end
       # close XML block
-      recipients_body_xml += "\n  </recipients>"
+      recipients_body_xml << "\n  </recipients>"
     end
 
     # add wrapper incl. authentication around the xml_body

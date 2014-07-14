@@ -20,5 +20,9 @@ module Rumeme
       @replies_auto_confirm = true
       @long_messages_strategy = :send
     end
+
+    PLAIN_TEXT_SERVERS = %w(smsmaster.m4u.com.au smsmaster1.m4u.com.au smsmaster2.m4u.com.au)
+
+    XML_SERVERS = %w(xml.m4u.com.au)
   end
 end
