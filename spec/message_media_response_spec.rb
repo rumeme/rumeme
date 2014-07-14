@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 require 'spec_helper'
-require 'sms_interface_helper'
+require 'xml_responses_helper'
 
 describe Rumeme::MessageMediaResponse do
 

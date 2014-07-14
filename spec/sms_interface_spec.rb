@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 require 'spec_helper'
-require 'sms_interface_helper'
+require 'xml_responses_helper'
 
 describe Rumeme::SmsInterface do
 
@@ -16,7 +16,8 @@ describe Rumeme::SmsInterface do
     Rumeme.configuration.password = ENV['MEME_PASSWORD']
 
     if Rumeme.configuration.testing
-      puts '# mocking responses from message media
+      puts '
+# mocking responses from message media
 # no interaction with their server will take place'
     else
       puts '# using live servers of MessageMedia'
