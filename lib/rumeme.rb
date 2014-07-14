@@ -7,6 +7,10 @@ require 'rumeme/sms_message'
 require 'rumeme/sms_reply'
 require 'rumeme/sms_interface'
 require 'rumeme/version'
+require 'rumeme/message_media'
+require 'rumeme/message_media_response'
+require 'rumeme/build_xml_sms_interface'
+require 'rumeme/parse_xml_sms_interface'
 
 module Rumeme
   class << self

@@ -6,6 +6,8 @@ module Rumeme
     attr_accessor :use_message_id
     attr_accessor :secure
     attr_accessor :replies_auto_confirm
+    attr_accessor :testing
+    attr_accessor :mock_response
 
     #
     # possible values
