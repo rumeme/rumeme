@@ -1,5 +1,7 @@
 # encoding: UTF-8
 
+require 'nokogiri'
+
 # Rumeme main module
 module Rumeme
   # Build the XML for the XML API Interface
@@ -23,9 +25,8 @@ module Rumeme
     #   {number: '61410000002', uid: '2'}])
     # @return [String] the XML
     def block_numbers(numbers)
-      block_numbers_body_xml = common_code_for_element_recipients(numbers)
-      # add XML wrapper
-      build_xml('blockNumbers', block_numbers_body_xml)
+      xml = build_xml('blockNumbers')
+      common_code_for_element_recipients(numbers, xml)
     end
 
     # The Unblock Numbers request is used to remove existing number blocks.
@@ -37,9 +38,8 @@ module Rumeme
     #   {number: '61410000002', uid: '2'}])
     # @return [String] the XML
     def unblock_numbers(numbers)
-      unblock_numbers_body_xml = common_code_for_element_recipients(numbers)
-      # add XML wrapper
-      build_xml('unblockNumbers', unblock_numbers_body_xml)
+      xml = build_xml('unblockNumbers')
+      common_code_for_element_recipients(numbers, xml)
     end
 
     # The Get Blocked Numbers request is used retrieve a list of numbers that
@@ -48,30 +48,36 @@ module Rumeme
     # @param [Integer] Maximum number of results (numbers) to be returned
     # @return [String] the XML
     def get_blocked_numbers(max_results = false)
-      body_xml = ''
-      if max_results
-        body_xml << " <maximumRecipients>#{max_results}</maximumRecipients>"
+      xml = build_xml('getBlockedNumbers')
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.maximumRecipients max_results if max_results
       end
-      build_xml('getBlockedNumbers', body_xml)
+      xml.doc.root.to_xml
     end
 
     private
 
     # Common code for the element recipients used by (un)block_numbers
-    def common_code_for_element_recipients(numbers)
-      recipients_body_xml = '<recipients>'
-      numbers.each do |number|
-        # start the XML block
-        recipients_body_xml << "\n    <recipient"
-        # individual numbers and (optional) UIDs
-        if number.is_a? Hash
-          recipients_body_xml << " uid=\"#{number[:uid]}\""
-          number = number[:number]
+    # @param numbers [Integer Array] the number to be unblocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @example common_code_for_element_recipients([61410000001,61410000002], 
+    #   xml) OR
+    #   common_code_for_element_recipients([{number: '61410000001', uid: '1'},
+    #   {number: '61410000002', uid: '2'}], xml)
+    # @return [String] the XML
+    def common_code_for_element_recipients(numbers, xml)
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.recipients do
+          numbers.each do |number|
+            if number.is_a? Hash
+              body_xml.recipient(uid: number[:uid]) { body_xml.text number[:number] }
+            else
+              body_xml.recipient number
+            end
+          end
         end
-        recipients_body_xml << ">#{number}</recipient>"
       end
-      # close XML block
-      recipients_body_xml << "\n  </recipients>"
+      xml.doc.root.to_xml
     end
 
     # add wrapper incl. authentication around the xml_body
@@ -79,17 +85,19 @@ module Rumeme
     # @param [STRING] the name of the root element
     # @param [STRING] xml to be included within <requestBody>
     # @return [STRING] xml including wrapper and authentication
-    def build_xml(root_name, xml_body)
-      "<#{root_name} xmlns=\"http://xml.m4u.com.au/2009\">
-<authentication>
- <userId>#{@username}</userId>
- <password>#{@password}</password>
-</authentication>
-<requestBody>
- #{xml_body}
-</requestBody>
-</#{root_name}>
-"
+    def build_xml(root_name)
+      xml = Nokogiri::XML::Builder.new
+      password = @password
+      username = @username
+
+      xml.send(root_name, 'xmlns' => 'http://xml.m4u.com.au/2009') do 
+        xml.authentication do 
+          xml.userId username
+          xml.password password
+        end 
+        xml.requestBody
+      end
+      xml
     end
   end
 end
