@@ -6,7 +6,7 @@ require 'xml_responses_helper'
 describe Rumeme::MessageMediaResponse do
 
   it 'tests for an invalid valid response' do
-    expect{Rumeme::MessageMediaResponse.new(INVALID_RESPONSE)}.to raise_error
+    expect { Rumeme::MessageMediaResponse.new(INVALID_RESPONSE) }.to raise_error
   end
 
   it 'tests for a failed success, valid response with errors' do
@@ -28,7 +28,6 @@ describe Rumeme::MessageMediaResponse do
     response = Rumeme::MessageMediaResponse.new(SUCCEEDING_BLOCK_NUMBERS_RESPONSE)
     expect(response.errors.count).to eq 0
   end
-
 
   it 'ensures we get an empty results_attributes array if there are none' do
     response = Rumeme::MessageMediaResponse.new(NO_ATTRIBUTES_RESPONSE)

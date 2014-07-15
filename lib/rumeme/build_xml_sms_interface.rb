@@ -60,7 +60,7 @@ module Rumeme
     # Common code for the element recipients used by (un)block_numbers
     # @param numbers [Integer Array] the number to be unblocked
     #   if you want to use the UID functionality an Array of Hashes is expected
-    # @example common_code_for_element_recipients([61410000001,61410000002], 
+    # @example common_code_for_element_recipients([61410000001,61410000002],
     #   xml) OR
     #   common_code_for_element_recipients([{number: '61410000001', uid: '1'},
     #   {number: '61410000002', uid: '2'}], xml)
@@ -70,7 +70,9 @@ module Rumeme
         body_xml.recipients do
           numbers.each do |number|
             if number.is_a? Hash
-              body_xml.recipient(uid: number[:uid]) { body_xml.text number[:number] }
+              body_xml.recipient(uid: number[:uid]) do
+                body_xml.text number[:number]
+              end
             else
               body_xml.recipient number
             end
@@ -90,11 +92,11 @@ module Rumeme
       password = @password
       username = @username
 
-      xml.send(root_name, 'xmlns' => 'http://xml.m4u.com.au/2009') do 
-        xml.authentication do 
+      xml.send(root_name, 'xmlns' => 'http://xml.m4u.com.au/2009') do
+        xml.authentication do
           xml.userId username
           xml.password password
-        end 
+        end
         xml.requestBody
       end
       xml

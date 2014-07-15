@@ -15,10 +15,9 @@ module Rumeme
       begin
         @result = @parsed.first[1][0]['result'][0]
       rescue
-        fail "The provided XML was not formatted as expected. xml=#{data}"
+        raise "The provided XML was not formatted as expected. xml=#{data}"
       end
     end
-
 
     # Does the response indicate a success?
     # @api public
