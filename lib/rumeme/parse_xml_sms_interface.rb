@@ -14,6 +14,9 @@ module Rumeme
       # @return [Hash] xml parsed into an Hash
       # @example parse(xml_response)
       def parse(xml)
+        # currently we only support access to xml objects
+        fail "expected xml got #{xml}" unless xml && xml.include?('<?xml ')
+        
         doc = Nokogiri::XML(xml)
         parser_helper(doc)
       end
