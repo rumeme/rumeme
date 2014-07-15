@@ -4,7 +4,7 @@
 module Rumeme
   # Build the XML for the XML API Interface
   # @author Hartwig Brandl <code@hartwigbrandl.com>
-  class ParseXmlSmsInterface
+  class XmlParser
     require 'nokogiri'
 
     class << self
@@ -16,7 +16,7 @@ module Rumeme
       def parse(xml)
         # currently we only support access to xml objects
         fail "expected xml got #{xml}" unless xml && xml.include?('<?xml ')
-        
+
         doc = Nokogiri::XML(xml)
         parser_helper(doc)
       end

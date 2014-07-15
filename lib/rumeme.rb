@@ -10,7 +10,7 @@ require 'rumeme/version'
 require 'rumeme/message_media'
 require 'rumeme/message_media_response'
 require 'rumeme/build_xml_sms_interface'
-require 'rumeme/parse_xml_sms_interface'
+require 'rumeme/xml_parser'
 
 module Rumeme
   class << self

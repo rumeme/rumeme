@@ -11,7 +11,7 @@ module Rumeme
     def initialize(data)
       # save it raw and in parsed form
       @xml = data
-      @parsed = Rumeme::ParseXmlSmsInterface.parse(@xml)
+      @parsed = Rumeme::XmlParser.parse(@xml)
       begin
         @result = @parsed.first[1][0]['result'][0]
       rescue

@@ -3,11 +3,11 @@
 require 'spec_helper'
 require 'xml_responses_helper'
 
-describe Rumeme::ParseXmlSmsInterface do
+describe Rumeme::XmlParser do
 
   it 'successfully parses a valid xml file' do
     xml = SUCCEEDING_GET_BLOCKED_NUMBERS_RESPONSE
-    parsed = Rumeme::ParseXmlSmsInterface.parse(xml)
+    parsed = Rumeme::XmlParser.parse(xml)
     expected_hash = { 'getBlockedNumbersResponse' =>
       [
         { 'result' =>
