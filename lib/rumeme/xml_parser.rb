@@ -42,7 +42,7 @@ module Rumeme
 
           # save it to the result hash
           result[element.name] ||= []
-          result[element.name].push(parsed_element)
+          result[element.name].push(parsed_element) unless parsed_element == {}
         end
         result
       end
@@ -65,7 +65,8 @@ module Rumeme
         end
 
         # text with a newline will be combined texts of children
-        result_hash['text'] = element.text unless element.text.include?("\n")
+        result_hash['text'] = element.text unless element.text.empty? ||
+          element.text.include?("\n")
 
         result_hash
       end

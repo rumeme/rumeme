@@ -13,7 +13,7 @@ module Rumeme
       @xml = data
       @parsed = Rumeme::XmlParser.parse(@xml)
       begin
-        @result = @parsed.first[1][0]['result'][0]
+        @result = @parsed.first[1][0]['result'][0] || {}
       rescue
         raise "The provided XML was not formatted as expected. xml=#{data}"
       end
