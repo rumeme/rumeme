@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://smsmaster.m4u.com.au/
+    body: "m4u\r\nUSER=USERNAME#\r\nPASSWORD=SECRET\r\nVER=PHP1.0\r\nMESSAGES2.0\r\n0 +11234567 0 169 0 ok message text\r\n.\r\n"
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: ' <TITLE>M4U SMSMASTER</TITLE> <BODY>100 OK</BODY> '
+    http_version: '1.1'
+  recorded_at: Wed, 31 Jul 2013 01:45:04 GMT
+- request:
+    method: post
+    uri: https://smsmaster.m4u.com.au/
+    body: "m4u\r\nUSER=USERNAME#\r\nPASSWORD=SECRET\r\nVER=PHP1.0\r\nMESSAGES2.0\r\n0 +11234567 0 169 0 fail message text\r\n.\r\n"
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: ' <TITLE>M4U SMSMASTER</TITLE> <BODY>123 error</BODY> '
+    http_version: '1.1'
+  recorded_at: Wed, 31 Jul 2013 01:45:04 GMT
+
+#mocking empty message request, for testing current behaviour
+- request:
+    method: post
+    uri: https://smsmaster.m4u.com.au/
+    body: "m4u\r\nUSER=USERNAME#\r\nPASSWORD=SECRET\r\nVER=PHP1.0\r\nMESSAGES2.0\r\n.\r\n"
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: ' <TITLE>M4U SMSMASTER</TITLE> <BODY>100 OK</BODY> '
+    http_version: '1.1'
+  recorded_at: Wed, 31 Jul 2013 01:45:04 GMT
+
+- request:
+    method: post
+    uri: https://smsmaster.m4u.com.au/
+    body: "m4u\r\nUSER=USERNAME#\r\nPASSWORD=SECRET\r\nVER=PHP1.0\r\nCONFIRM_RECEIVED\r\n.\r\n"
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/html;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: ' <TITLE>M4U SMSMASTER</TITLE> <BODY>100 OK</BODY> '
+    http_version: '1.1'
+  recorded_at: Wed, 31 Jul 2013 01:45:04 GMT
+
+recorded_with: VCR 2.0.0
+
+
+
