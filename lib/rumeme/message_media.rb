@@ -6,7 +6,6 @@ require 'net/https'
 module Rumeme
   # communicate with server(s) of MessageMedia
   class MessageMedia
-
     class << self
       # open secure or unsecure connection to message media
       def open_server_connection(server)

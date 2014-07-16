@@ -86,7 +86,7 @@ module Rumeme
     def send_messages
       post_string = @message_list.map(&:post_string).join
       text_buffer = "MESSAGES2.0\r\n#{post_string}.\r\n"
-      response_message, response_code = post_data_to_server(text_buffer)  
+      response_message, response_code = post_data_to_server(text_buffer)
       response_code == 100
     end
 
@@ -158,7 +158,6 @@ module Rumeme
       "m4u\r\nUSER=#{@username}#{message_id_sign}\r\nPASSWORD=#{@password}\r\nVER=PHP1.0\r\n"
     end
 
-   
     def post_data_to_server(data)
       text_buffer = create_login_string + data
 
