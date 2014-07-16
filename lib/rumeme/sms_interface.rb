@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'net/http'
 require 'net/https'
 
@@ -12,10 +13,10 @@ module Rumeme
       split: ->(message) { Utils.split_message(message) }
     }
 
-    def initialize
+    def initialize(username = nil, password = nil)
       Rumeme.configuration.tap do |cfg|
-        @username = cfg.username
-        @password = cfg.password
+        @username = username || cfg.username
+        @password = password || cfg.password
         @use_message_id = cfg.use_message_id
         @secure = cfg.secure
 
@@ -27,7 +28,6 @@ module Rumeme
       end
 
       @message_list = []
-      @server_list = %w(smsmaster.m4u.com.au smsmaster1.m4u.com.au smsmaster2.m4u.com.au)
     end
 
     # Add a message to be sent.
@@ -43,15 +43,6 @@ module Rumeme
     # Clear all the messages from the list.
     def clear_messages
       @message_list.clear
-    end
-
-    def open_server_connection(server)
-      port, use_ssl = @secure ? [443, true] : [80, false]
-
-      http_connection = Net::HTTP.new(server, port)
-      http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      http_connection.use_ssl = use_ssl
-      http_connection
     end
 
     # Change the password on the local machine and server.
@@ -95,7 +86,7 @@ module Rumeme
     def send_messages
       post_string = @message_list.map(&:post_string).join
       text_buffer = "MESSAGES2.0\r\n#{post_string}.\r\n"
-      response_message, response_code = post_data_to_server(text_buffer)
+      response_message, response_code = post_data_to_server(text_buffer)  
       response_code == 100
     end
 
@@ -103,6 +94,48 @@ module Rumeme
     # Raises exception if not successful
     def send_messages!
       fail BadServerResponse, 'error during sending messages' unless send_messages
+    end
+
+    # The Block Numbers request is used to prevent the authenticated account
+    # being able to send messages to the specified numbers in future.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @example block_numbers[61410000001,61410000002] OR
+    #   block_numbers([{number: '61410000001', uid: '1'},
+    #   {number: '61410000002', uid: '2'}])
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def block_numbers(numbers)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new(@username, @password)
+      xml = xml_sms_interface.block_numbers(numbers)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Unblock Numbers request is used to remove existing number blocks.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @example unblock_numbers[61410000001,61410000002] OR
+    #   unblock_numbers([{number: '61410000001', uid: '1'},
+    #   {number: '61410000002', uid: '2'}])
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def unblock_numbers(numbers)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new(@username, @password)
+      xml = xml_sms_interface.unblock_numbers(numbers)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Get Blocked Numbers request is used retrieve a list of numbers that
+    # are currently blocked for the authenticated account.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @param [Integer] Maximum number of results (numbers) to be returned
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def get_blocked_numbers(max_results = false)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new(@username, @password)
+      xml = xml_sms_interface.get_blocked_numbers(max_results)
+      Rumeme::MessageMedia.post_xml(xml)
     end
 
     private
@@ -125,28 +158,11 @@ module Rumeme
       "m4u\r\nUSER=#{@username}#{message_id_sign}\r\nPASSWORD=#{@password}\r\nVER=PHP1.0\r\n"
     end
 
+   
     def post_data_to_server(data)
-      http_connection = open_server_connection(@server_list[0])
       text_buffer = create_login_string + data
 
-      headers = { 'Content-Length' => text_buffer.length.to_s }
-
-      path = '/'
-
-      resp = http_connection.post(path, text_buffer, headers)
-      data = resp.body
-
-      fail BadServerResponse, 'http response code != 200' unless resp.code.to_i == 200
-
-      if data =~ %r{^.+<TITLE>(.+)</TITLE>.+<BODY>(.+)</BODY>.+}m
-        parsed_title, parsed_body = $1, $2
-      else
-        fail BadServerResponse, 'not html'
-      end
-
-      fail BadServerResponse, 'bad title' unless parsed_title == 'M4U SMSMASTER'
-
-      response_message = parsed_body.strip
+      response_message = Rumeme::MessageMedia.post_plain_text(text_buffer)
 
       response_message.match(/^(\d+)\s+/)
       response_code = $1.to_i
