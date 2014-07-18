@@ -14,7 +14,7 @@ module Rumeme
       @parsed = Rumeme::XmlParser.parse(@xml)
       begin
         if @parsed['faultResponse']
-          @result = {'errors' => @parsed['faultResponse']}
+          @result = { 'errors' => @parsed['faultResponse'] }
         else
           @result = @parsed.first[1][0]['result'][0] || {}
         end
@@ -66,11 +66,11 @@ module Rumeme
 
     # how many replies where confirmed (confirmReplyResponse)
     # @api public
-    # @return [Integer] Number of confirmed 
+    # @return [Integer] Number of confirmed
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.confirmed
     def confirmed
-      (result_attributes['confirmed'] || "").to_i
+      (result_attributes['confirmed'] || '').to_i
     end
 
     # easy access to the result attribute unscheduled

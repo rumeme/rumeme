@@ -72,7 +72,7 @@ describe Rumeme::MessageMediaResponse do
       'attributes' =>
         { 'type' => 'daily',
           'creditLimit' => '1089',
-          'creditRemaining' => '1089' }}]
+          'creditRemaining' => '1089' } }]
   end
 
   it 'ensures calling unscheduled works' do

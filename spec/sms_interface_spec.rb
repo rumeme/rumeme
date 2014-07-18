@@ -211,7 +211,6 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.errors.count).to be > 0
   end
 
-
   # it 'tests a checkReports request', focus: true do
   #   Rumeme.configuration.mock_response = CHECK_REPORTS_RESPONSE
   #   sms_interface = Rumeme::SmsInterface.new
@@ -228,9 +227,9 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
       'attributes' =>
         { 'type' => 'daily',
           'creditLimit' => '1089',
-          'creditRemaining' => '1089' }}]
+          'creditRemaining' => '1089' } }]
   end
-  
+
   # it 'tests a succeedig confirmReplies request', focus: true do
   #   Rumeme.configuration.mock_response = CONFIRM_REPLIES_RESPONSE
   #   sms_interface = Rumeme::SmsInterface.new

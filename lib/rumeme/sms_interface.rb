@@ -153,7 +153,7 @@ module Rumeme
     # @return [Rumeme::MessageMediaResponse] The response object
     def check_reports(max_results = false)
       xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
-      xml = xml_sms_interface.check_reports
+      xml = xml_sms_interface.check_reports(max_results)
       Rumeme::MessageMedia.post_xml(xml)
     end
     

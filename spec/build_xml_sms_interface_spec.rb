@@ -134,7 +134,7 @@ describe Rumeme::BuildXmlSmsInterface do
     </replies>
   </requestBody>
 </confirmReplies>'
-    expect(build_xml_sms_interface.confirm_replies([1,2,3])).to eq expected_xml
+    expect(build_xml_sms_interface.confirm_replies([1, 2, 3])).to eq expected_xml
   end
 
   it 'builds a correct ConfirmReports request', focus2: true do
