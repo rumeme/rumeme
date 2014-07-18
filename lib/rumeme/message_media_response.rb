@@ -13,7 +13,11 @@ module Rumeme
       @xml = data
       @parsed = Rumeme::XmlParser.parse(@xml)
       begin
-        @result = @parsed.first[1][0]['result'][0] || {}
+        if @parsed['faultResponse']
+          @result = {'errors' => @parsed['faultResponse']}
+        else
+          @result = @parsed.first[1][0]['result'][0] || {}
+        end
       rescue
         raise "The provided XML was not formatted as expected. xml=#{data}"
       end
@@ -45,6 +49,37 @@ module Rumeme
 
     def result_attributes
       @result['attributes'] || {}
+    end
+
+    # reports returned by MessageMedia
+    # @api public
+    # @return [Array] Array of all the reports (if any)
+    # example meme = MessageMediaResponse(xml_response)
+    #   meme.reports
+    def reports
+      @result['reports'] || []
+    end
+
+    def account_details
+      @result['accountDetails'] || []
+    end
+
+    # how many replies where confirmed (confirmReplyResponse)
+    # @api public
+    # @return [Integer] Number of confirmed 
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.confirmed
+    def confirmed
+      (result_attributes['confirmed'] || "").to_i
+    end
+
+    # easy access to the result attribute unscheduled
+    # @api public
+    # @return [Integer] number of unscheduled messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.unscheduled
+    def unscheduled
+      (result_attributes['unscheduled'] || '').to_i
     end
   end
 end

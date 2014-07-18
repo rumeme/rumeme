@@ -138,6 +138,92 @@ module Rumeme
       Rumeme::MessageMedia.post_xml(xml)
     end
 
+    # The Check Reports request is used to download delivery reports that are
+    # waiting on the gateway. Delivery reports are downloaded for a specific
+    # user account. A delivery report reports the delivery status of a sent
+    # message. Delivery reports may only be obtained for SMS messages not voice
+    # messages and must be requested explicitly in the Send Messages request
+    # (Section 7.4).
+    # Delivery reports will remain marked as unsent and will be downloaded each
+    # time the Check Reports request is made until they are confirmed by the
+    # user as having been received. See Section 7.12 for details on confirming
+    # reports. 
+    # @api public
+    # @param [Integer] Maximum number of results (reports) to be returned
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def check_reports(max_results = false)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.check_reports
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+    
+    # The Check User request is used to authenticate a user and obtain their account credit details
+    # @api public
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def check_user
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.check_user
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Confirm Replies request is used to confirm the receipt of reply
+    # messages that were downloaded from the gateway. Replies that are
+    # unconfirmed will be downloaded each time a Check Replies request is
+    # made. When reply messages are confirmed they are marked as sent and will
+    # not be downloaded again. It is not possible for a user to confirm 
+    # replies that do not belong to them. 
+    # Reply messages must be confirmed on an individual basis. Replies are
+    # specified by their receipt ID. This receipt ID is the same receipt ID
+    # that the reply message was assigned in the Check Replies response. The
+    # receipt ID is specified by the attribute receiptId. See Section 7.7 for
+    # details on the Check Replies response. 
+    # @api public
+    # @param [Array] receipt IDs
+    def confirm_replies(receipt_ids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.confirm_replies(receipt_ids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Confirm Reports request is used to confirm the receipt of delivery
+    # reports that were downloaded from the gateway. Delivery reports that are
+    # unconfirmed will be downloaded each time a Check Reports request is made.
+    # When delivery reports are confirmed they are marked as sent and will not
+    # be downloaded again. It is not possible for a user to confirm delivery
+    # reports that do not belong to them. Delivery reports must be confirmed on
+    # an individual basis. Delivery reports are specified by their receipt ID.
+    # This receipt ID is the same receipt ID that the delivery report was
+    # assigned in the Check Reports response. The receipt ID is specified by
+    # the attribute receiptId. See Section 7.9 for details on the Check
+    # Reports response. 
+    # @api public
+    # @param [Array] the receipt IDs
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def confirm_reports(receipt_ids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.confirm_reports(receipt_ids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Delete Scheduled Messages request is used to request the unscheduling
+    # of messages that have been submitted to the gateway but are still yet to
+    # be sent. Only messages that were given a scheduled timestamp in the Send
+    # Messages request can be unscheduled. Only messages sent from the given
+    # account can be unscheduled. Messages submitted to the gateway via other
+    # APIs may be deleted via this method.  
+    # Messages must be confirmed on an individual basis. Messages are specified
+    # by their message ID. This message ID is the same message ID that was
+    # specified in recipient uid attribute in the Send Messages request.
+    # Messages with an unrecognised message ID will be ignored.
+    # @api public
+    # @param [Array] UIDs of the messages to be unscheduled
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def delete_scheduled_messages(uids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.delete_scheduled_messages(uids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
     private
 
     def check_message_args(args)

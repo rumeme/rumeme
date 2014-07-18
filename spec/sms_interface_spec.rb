@@ -210,4 +210,48 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.result_attributes['failed']).to eq '1'
     expect(response.errors.count).to be > 0
   end
+
+
+  # it 'tests a checkReports request', focus: true do
+  #   Rumeme.configuration.mock_response = CHECK_REPORTS_RESPONSE
+  #   sms_interface = Rumeme::SmsInterface.new
+  #   response = sms_interface.check_reports
+  #   expect(response.success?).to eq true
+  #   expect(response.reports[0]['report'].count).to eq 4
+  # end
+
+  it 'tests a checkUser request', focus: true do
+    Rumeme.configuration.mock_response = CHECK_USER_RESPONSE
+    sms_interface = Rumeme::SmsInterface.new
+    response = sms_interface.check_user
+    expect(response.account_details).to eq [{
+      'attributes' =>
+        { 'type' => 'daily',
+          'creditLimit' => '1089',
+          'creditRemaining' => '1089' }}]
+  end
+  
+  # it 'tests a succeedig confirmReplies request', focus: true do
+  #   Rumeme.configuration.mock_response = CONFIRM_REPLIES_RESPONSE
+  #   sms_interface = Rumeme::SmsInterface.new
+  #   response = sms_interface.confirm_replies([1,2,3,4,5])
+  #   expect(response.confirmed).to eq 5
+  # end
+
+  # it 'tests a confirmReports request' do
+  #   Rumeme.configuration.mock_response = CONFIRM_REPORTS_RESPONSE
+  #   sms_interface = Rumeme::SmsInterface.new
+  #   response = sms_interface.confirm_reports([1, 2, 3, 4, 5])
+  #   expect(response.success?).to eq true
+  #   expect(response.confirmed).to eq 5
+  # end
+
+  # it 'tests a succeeding DeleteScheduledMessages request' do
+  #   Rumeme.configuration.mock_response = DELETE_SCHEDULED_MESSAGES_RESPONSE
+  #   sms_interface = Rumeme::SmsInterface.new
+  #   response = sms_interface.unblock_numbers([1, 2, 3])
+  #   expect(response.success?).to eq true
+  #   expect(response.unscheduled).to eq 3
+  # end
+
 end

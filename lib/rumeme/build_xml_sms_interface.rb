@@ -55,6 +55,107 @@ module Rumeme
       xml.doc.root.to_xml
     end
 
+    # The Check Reports request is used to download delivery reports that are
+    # waiting on the gateway. Delivery reports are downloaded for a specific
+    # user account. A delivery report reports the delivery status of a sent
+    # message. Delivery reports may only be obtained for SMS messages not voice
+    # messages and must be requested explicitly in the Send Messages request
+    # (Section 7.4).
+    # Delivery reports will remain marked as unsent and will be downloaded each
+    # time the Check Reports request is made until they are confirmed by the
+    # user as having been received. See Section 7.12 for details on confirming
+    # reports. 
+    # @api public
+    # @param [Integer] Maximum number of results (reports) to be returned
+    # @return [String] the XML
+    def check_reports(max_results = false)
+      xml = build_xml('checkReports')
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.maximumReports max_results if max_results
+      end
+      xml.doc.root.to_xml
+    end
+    
+    # The Check User request is used to authenticate a user and obtain their account credit details
+    # @api public
+    # @return [String] the xml
+    def check_user
+      build_xml('checkUser', false).doc.root.to_xml
+    end
+
+    # The Confirm Replies request is used to confirm the receipt of reply
+    # messages that were downloaded from the gateway. Replies that are
+    # unconfirmed will be downloaded each time a Check Replies request is
+    # made. When reply messages are confirmed they are marked as sent and will
+    # not be downloaded again. It is not possible for a user to confirm 
+    # replies that do not belong to them. 
+    # Reply messages must be confirmed on an individual basis. Replies are
+    # specified by their receipt ID. This receipt ID is the same receipt ID
+    # that the reply message was assigned in the Check Replies response. The
+    # receipt ID is specified by the attribute receiptId. See Section 7.7 for
+    # details on the Check Replies response. 
+    # @api public
+    # @param [Array] receipt IDs
+    def confirm_replies(receipt_ids)
+      xml = build_xml('confirmReplies')
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.replies do
+          receipt_ids.each do |receipt_id|
+            body_xml.reply(receiptId: receipt_id)
+          end
+        end
+      end
+      xml.doc.root.to_xml
+    end
+
+    # The Confirm Reports request is used to confirm the receipt of delivery
+    # reports that were downloaded from the gateway. Delivery reports that are
+    # unconfirmed will be downloaded each time a Check Reports request is made.
+    # When delivery reports are confirmed they are marked as sent and will not
+    # be downloaded again. It is not possible for a user to confirm delivery
+    # reports that do not belong to them. Delivery reports must be confirmed on
+    # an individual basis. Delivery reports are specified by their receipt ID.
+    # This receipt ID is the same receipt ID that the delivery report was
+    # assigned in the Check Reports response. The receipt ID is specified by
+    # the attribute receiptId. See Section 7.9 for details on the Check
+    # Reports response.
+    # @api public
+    # @param [Array] the receipt IDs
+    # @return [String] the XML
+    def confirm_reports(receipt_ids)
+      xml = build_xml('confirmReports')
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.reports do
+          receipt_ids.each do |receipt_id|
+            body_xml.report(receiptId: receipt_id)
+          end
+        end
+      end
+      xml.doc.root.to_xml
+    end
+
+    # The Delete Scheduled Messages request is used to request the unscheduling
+    # of messages that have been submitted to the gateway but are still yet to
+    # be sent. Only messages that were given a scheduled timestamp in the Send
+    # Messages request can be unscheduled. Only messages sent from the given
+    # account can be unscheduled. Messages submitted to the gateway via other
+    # APIs may be deleted via this method.
+    # Messages must be confirmed on an individual basis. Messages are specified
+    # by their message ID. This message ID is the same message ID that was
+    # specified in recipient uid attribute in the Send Messages request.
+    # Messages with an unrecognised message ID will be ignored.
+    def delete_scheduled_messages(uids)
+      xml = build_xml('deleteScheduledMessages')
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.messages do
+          uids.each do |uid|
+            body_xml.message(messageId: uid)
+          end
+        end
+      end
+      xml.doc.root.to_xml
+    end
+
     private
 
     # Common code for the element recipients used by (un)block_numbers
@@ -85,9 +186,9 @@ module Rumeme
     # add wrapper incl. authentication around the xml_body
     # @api private
     # @param [STRING] the name of the root element
-    # @param [STRING] xml to be included within <requestBody>
+    # @param [Boolean] should we add the requestBody element? defaults to true
     # @return [STRING] xml including wrapper and authentication
-    def build_xml(root_name)
+    def build_xml(root_name, add_request_body = true)
       xml = Nokogiri::XML::Builder.new
       password = @password
       username = @username
@@ -96,8 +197,8 @@ module Rumeme
         xml.authentication do
           xml.userId username
           xml.password password
-        end
-        xml.requestBody
+        end 
+        xml.requestBody if add_request_body
       end
       xml
     end

@@ -107,4 +107,70 @@ describe Rumeme::BuildXmlSmsInterface do
 </getBlockedNumbers>'
     expect(build_xml_sms_interface.get_blocked_numbers(50)).to eq expected_xml
   end
+
+  it 'builds a correct CheckUser request' do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    expected_xml = '<checkUser xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+</checkUser>'
+    expect(build_xml_sms_interface.check_user).to eq expected_xml
+  end
+
+  it 'builds a correct ConfirmReplies request' do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    expected_xml = '<confirmReplies xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <replies>
+      <reply receiptId="1"/>
+      <reply receiptId="2"/>
+      <reply receiptId="3"/>
+    </replies>
+  </requestBody>
+</confirmReplies>'
+    expect(build_xml_sms_interface.confirm_replies([1,2,3])).to eq expected_xml
+  end
+
+  it 'builds a correct ConfirmReports request', focus2: true do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    expect_xml = '<confirmReports xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <reports>
+      <report receiptId="1"/>
+      <report receiptId="2"/>
+      <report receiptId="3"/>
+    </reports>
+  </requestBody>
+</confirmReports>'
+    expect(build_xml_sms_interface.confirm_reports([1, 2, 3])).to eq expect_xml
+  end
+
+  it 'builds a correct DeleteScheduledMessages request' do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    expected_xml = '<deleteScheduledMessages xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <messages>
+      <message messageId="1"/>
+      <message messageId="2"/>
+      <message messageId="3"/>
+    </messages>
+  </requestBody>
+</deleteScheduledMessages>'
+    expect(build_xml_sms_interface.delete_scheduled_messages([1, 2, 3])
+      ).to eq expected_xml
+  end
 end
