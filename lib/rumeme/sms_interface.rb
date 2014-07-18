@@ -147,7 +147,7 @@ module Rumeme
     # Delivery reports will remain marked as unsent and will be downloaded each
     # time the Check Reports request is made until they are confirmed by the
     # user as having been received. See Section 7.12 for details on confirming
-    # reports. 
+    # reports.
     # @api public
     # @param [Integer] Maximum number of results (reports) to be returned
     # @return [Rumeme::MessageMediaResponse] The response object
@@ -156,7 +156,7 @@ module Rumeme
       xml = xml_sms_interface.check_reports(max_results)
       Rumeme::MessageMedia.post_xml(xml)
     end
-    
+
     # The Check User request is used to authenticate a user and obtain their account credit details
     # @api public
     # @return [Rumeme::MessageMediaResponse] The response object
@@ -170,13 +170,13 @@ module Rumeme
     # messages that were downloaded from the gateway. Replies that are
     # unconfirmed will be downloaded each time a Check Replies request is
     # made. When reply messages are confirmed they are marked as sent and will
-    # not be downloaded again. It is not possible for a user to confirm 
-    # replies that do not belong to them. 
+    # not be downloaded again. It is not possible for a user to confirm
+    # replies that do not belong to them.
     # Reply messages must be confirmed on an individual basis. Replies are
     # specified by their receipt ID. This receipt ID is the same receipt ID
     # that the reply message was assigned in the Check Replies response. The
     # receipt ID is specified by the attribute receiptId. See Section 7.7 for
-    # details on the Check Replies response. 
+    # details on the Check Replies response.
     # @api public
     # @param [Array] receipt IDs
     def confirm_replies(receipt_ids)
@@ -195,7 +195,7 @@ module Rumeme
     # This receipt ID is the same receipt ID that the delivery report was
     # assigned in the Check Reports response. The receipt ID is specified by
     # the attribute receiptId. See Section 7.9 for details on the Check
-    # Reports response. 
+    # Reports response.
     # @api public
     # @param [Array] the receipt IDs
     # @return [Rumeme::MessageMediaResponse] The response object
@@ -210,7 +210,7 @@ module Rumeme
     # be sent. Only messages that were given a scheduled timestamp in the Send
     # Messages request can be unscheduled. Only messages sent from the given
     # account can be unscheduled. Messages submitted to the gateway via other
-    # APIs may be deleted via this method.  
+    # APIs may be deleted via this method.
     # Messages must be confirmed on an individual basis. Messages are specified
     # by their message ID. This message ID is the same message ID that was
     # specified in recipient uid attribute in the Send Messages request.
