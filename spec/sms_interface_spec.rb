@@ -211,15 +211,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.errors.count).to be > 0
   end
 
-  # it 'tests a checkReports request', focus: true do
-  #   Rumeme.configuration.mock_response = CHECK_REPORTS_RESPONSE
-  #   sms_interface = Rumeme::SmsInterface.new
-  #   response = sms_interface.check_reports
-  #   expect(response.success?).to eq true
-  #   expect(response.reports[0]['report'].count).to eq 4
-  # end
-
-  it 'tests a checkUser request', focus: true do
+  it 'tests a checkUser request' do
     Rumeme.configuration.mock_response = CHECK_USER_RESPONSE
     sms_interface = Rumeme::SmsInterface.new
     response = sms_interface.check_user
@@ -230,27 +222,63 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
           'creditRemaining' => '1089' } }]
   end
 
-  # it 'tests a succeedig confirmReplies request', focus: true do
-  #   Rumeme.configuration.mock_response = CONFIRM_REPLIES_RESPONSE
-  #   sms_interface = Rumeme::SmsInterface.new
-  #   response = sms_interface.confirm_replies([1,2,3,4,5])
-  #   expect(response.confirmed).to eq 5
-  # end
+  it 'tests a succeedig confirmReplies request', focus: true do
+    sms_interface = Rumeme::SmsInterface.new
+    # confirming invalid replies, nothing to confirm for MessageMedia
+    response = sms_interface.confirm_replies([1, 2 , 3 , 4 , 5])
+    expect(response.confirmed).to eq 0
+  end
 
-  # it 'tests a confirmReports request' do
-  #   Rumeme.configuration.mock_response = CONFIRM_REPORTS_RESPONSE
-  #   sms_interface = Rumeme::SmsInterface.new
-  #   response = sms_interface.confirm_reports([1, 2, 3, 4, 5])
-  #   expect(response.success?).to eq true
-  #   expect(response.confirmed).to eq 5
-  # end
+  it 'tests a send Message request and delivery report check & confirm', focus: true do
+    sms_interface = Rumeme::SmsInterface.new
+    response = sms_interface.xml_send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                numbers: [{number: CORRECT_NUMBER}, {number: CORRECT_NUMBER_2}],
+                deliveryReport: true,
+               }]
+             )
+    expect(response.success?).to eq true
+    expect(response.sent).to eq 2
+    expect(response.scheduled).to eq 0
+    expect(response.failed).to eq 0
+    # sms messages won't be delivered that fast
+    response = sms_interface.check_reports
+    expect(response.success?).to eq true
+    expect(response.returned).to eq 0
+    expect(response.remaining).to eq 0
+    # confirming invalid report is => nothing to confirm for MessageMedia
+    response = sms_interface.confirm_reports([123, 456])
+    expect(response.confirmed).to eq 0
+  end
 
-  # it 'tests a succeeding DeleteScheduledMessages request' do
-  #   Rumeme.configuration.mock_response = DELETE_SCHEDULED_MESSAGES_RESPONSE
-  #   sms_interface = Rumeme::SmsInterface.new
-  #   response = sms_interface.unblock_numbers([1, 2, 3])
-  #   expect(response.success?).to eq true
-  #   expect(response.unscheduled).to eq 3
-  # end
+   it 'tests a scheduled send Message request & deleteScheduledMessages request', focus: true do
+    sms_interface = Rumeme::SmsInterface.new
+    response = sms_interface.xml_send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                numbers: [{number: CORRECT_NUMBER, uid: 12345}, {number: CORRECT_NUMBER_2, uid: 6789}],
+                scheduled: "#{Time.now.year}-12-31T23:30:00Z",
+               }]
+             )
+    expect(response.success?).to eq true
+    expect(response.sent).to eq 0
+    expect(response.scheduled).to eq 2
+    expect(response.failed).to eq 0
 
+    # unschedule
+    response = sms_interface.delete_scheduled_messages([12345, 6789])
+    expect(response.success?).to eq true
+    expect(response.unscheduled).to eq 2
+  end
+
+  it 'tests a send Message request and delivery report', focus: true do
+    sms_interface = Rumeme::SmsInterface.new
+    response = sms_interface.xml_send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                numbers: [{number: CORRECT_NUMBER}, {number: CORRECT_NUMBER_2}],
+                deliveryReport: true,
+               }]
+             )
+    expect(response.success?).to eq true
+  
+  end
 end

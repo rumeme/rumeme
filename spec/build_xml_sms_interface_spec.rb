@@ -173,4 +173,108 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml_sms_interface.delete_scheduled_messages([1, 2, 3])
       ).to eq expected_xml
   end
+
+  it 'builds a correct SendMessage request', focus: true do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                sequence_number: '1',
+                origin: 123,
+                numbers: [{number: 456, uid: 1}, {number: 789, uid: 2}],
+                scheduled: '2014-12-25T15:30:00Z',
+                delivery_report: true,
+                validity_period: 143,
+                tags: [{name: 'foo', value: 1}, {name: 'bar', value: 2}]
+               }]
+             )
+    expected_xml = '<sendMessages xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <messages sendMode="normal">
+      <message format="SMS" sequenceNumber="1">
+        <origin>123</origin>
+        <recipients>
+          <recipient uid="1">456</recipient>
+          <recipient uid="2">789</recipient>
+        </recipients>
+        <deliveryReport>true</deliveryReport>
+        <validityPeriod>143</validityPeriod>
+        <scheduled>2014-12-25T15:30:00Z</scheduled>
+        <content>Hello world</content>
+        <tags>
+          <tag name="foo">1</tag>
+          <tag name="bar">2</tag>
+        </tags>
+      </message>
+    </messages>
+  </requestBody>
+</sendMessages>'
+    expect(build_xml).to eq expected_xml
+  end
+
+  it 'builds a correct SendMessage request without tags', focus: true do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                sequence_number: '1',
+                origin: 123,
+                numbers: [{number: 456, uid: 1}, {number: 789, uid: 2}],
+                scheduled: '2014-12-25T15:30:00Z',
+                delivery_report: true,
+                validity_period: 143,
+               }]
+             )
+    expected_xml = '<sendMessages xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <messages sendMode="normal">
+      <message format="SMS" sequenceNumber="1">
+        <origin>123</origin>
+        <recipients>
+          <recipient uid="1">456</recipient>
+          <recipient uid="2">789</recipient>
+        </recipients>
+        <deliveryReport>true</deliveryReport>
+        <validityPeriod>143</validityPeriod>
+        <scheduled>2014-12-25T15:30:00Z</scheduled>
+        <content>Hello world</content>
+      </message>
+    </messages>
+  </requestBody>
+</sendMessages>'
+    expect(build_xml).to eq expected_xml
+  end
+
+  it 'builds a correct SendMessage request without optional arguments', focus: true do
+    build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+    build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
+                format: 'SMS',
+                numbers: [{number: 456}, {number: 789}],
+               }]
+             )
+    expected_xml = '<sendMessages xmlns="http://xml.m4u.com.au/2009">
+  <authentication>
+    <userId>invalid_username</userId>
+    <password>test</password>
+  </authentication>
+  <requestBody>
+    <messages sendMode="normal">
+      <message format="SMS">
+        <recipients>
+          <recipient>456</recipient>
+          <recipient>789</recipient>
+        </recipients>
+        <content>Hello world</content>
+      </message>
+    </messages>
+  </requestBody>
+</sendMessages>'
+    expect(build_xml).to eq expected_xml
+  end
 end

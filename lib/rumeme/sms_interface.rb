@@ -224,6 +224,41 @@ module Rumeme
       Rumeme::MessageMedia.post_xml(xml)
     end
 
+    # The Send Messages request is used to send one or more SMS or voice
+    # messages to one or more recipients. The MessageMedia Messaging Web
+    # Service does not place a hard limit on the number of messages that may be
+    # placed in a request but users should be aware that it may be more
+    # efficient to split large batches of messages into multiple requests to
+    # avoid timing out their internet connections. In general, provided the
+    # user has a sufficient internet connection, batches of up to one thousand
+    # messages should be fine. Batches larger than this should be split up into
+    # multiple requests. The XML Interface allows two types of messages to be
+    # sent: SMS and voice. SMS messages may only be sent to mobile devices;
+    # voice messages, on the other hand, may be sent to landlines and mobile
+    # devices. Voice messages will be read out to the recipient by a
+    # text-to-speech software application. The list of messages in the Send
+    # Messages request may consist of both SMS and voice messages types and
+    # each message may have multiple recipients. 
+    # @param [Array] Array of message Hashes
+    # @param [String] send mode. defaults to normal.
+    # @example send_messages([
+    #            {content: 'Hello world',
+    #             format: 'SMS',
+    #             sequenceNumber: 1,
+    #             origin: 123,
+    #             numbers: [{number: 456, uid: 1}]
+    #             scheduled: '2014-12-25T15:30:00Z'
+    #             delivery_report: true
+    #             validity_period: 143
+    #             tags: [{name: 'foo', value: 1}]
+    #            }]
+    #          )
+    def xml_send_messages(messages, send_mode = 'normal')
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.send_messages(messages, send_mode)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
     private
 
     def check_message_args(args)

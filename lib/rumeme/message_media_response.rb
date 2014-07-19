@@ -81,5 +81,50 @@ module Rumeme
     def unscheduled
       (result_attributes['unscheduled'] || '').to_i
     end
+    
+    # easy access to the result attribute sent
+    # @api public
+    # @return [Integer] number of sent messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.sent
+    def sent
+      (result_attributes['sent'] || '').to_i
+    end
+    
+    # easy access to the result attribute scheduled
+    # @api public
+    # @return [Integer] number of scheduled messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.scheduled
+    def scheduled
+      (result_attributes['scheduled'] || '').to_i
+    end
+
+    # easy access to the result attribute failed
+    # @api public
+    # @return [Integer] number of failed messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.failed
+    def failed
+      (result_attributes['failed'] || '').to_i
+    end 
+
+    # easy access to the result attribute returned
+    # @api public
+    # @return [Integer] number of returned messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.returned
+    def returned
+      (result_attributes['returned'] || '').to_i
+    end
+
+    # easy access to the result attribute remaining
+    # @api public
+    # @return [Integer] number of remaining messages
+    # @example meme = MessageMediaResponse(xml_response)
+    #   meme.remaining
+    def remaining
+      (result_attributes['remaining'] || '').to_i
+    end
   end
 end
