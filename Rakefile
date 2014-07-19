@@ -5,7 +5,16 @@ require 'date'
 
 RSpec::Core::RakeTask.new(:spec)
 
-task default: :spec
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+rescue LoadError
+  task :rubocop do
+    $stderr.puts 'Rubocop is disabled'
+  end
+end
+
+task default: [:spec, :rubocop]
 
 desc 'Bumps the version by a minor or patch version, depending on what was passed in.'
 task :bump, :part do |t, args|

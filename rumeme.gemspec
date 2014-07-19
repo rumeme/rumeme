@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/rumeme/rumeme'
   s.summary     = 'Ruby SDK for Message Media SMS Gateway API'
   s.description = 'Ruby SDK for Message Media SMS Gateway API'
-  s.license     = %q(MIT)
+  s.license     = 'MIT'
 
   s.add_development_dependency 'bundler', '~> 1.3'
 
