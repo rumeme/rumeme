@@ -2,7 +2,7 @@
 module Rumeme
   # handles the responses from MessageMedia
   class MessageMediaResponse
-    attr_reader :xml, :parsed
+    attr_reader :xml, :parsed, :result
 
     # load xml data into the instance
     # @api public
