@@ -245,10 +245,10 @@ module Rumeme
     #             format: 'SMS',
     #             sequenceNumber: 1,
     #             origin: 123,
-    #             numbers: [{number: 456, uid: 1}]
-    #             scheduled: '2014-12-25T15:30:00Z'
-    #             delivery_report: true
-    #             validity_period: 143
+    #             numbers: [{number: 456, uid: 1}],
+    #             scheduled: '2014-12-25T15:30:00Z',
+    #             delivery_report: true,
+    #             validity_period: 143,
     #             tags: [{name: 'foo', value: 1}]
     #            }]
     #          )
