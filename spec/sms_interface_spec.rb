@@ -279,4 +279,17 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.success?).to eq true
   
   end
+
+  it 'tests the full send message interface' do
+    sms_interface = Rumeme::SmsInterface.new
+    response = sms_interface.xml_send_messages([{content: 'Hello world',
+                  format: 'SMS',
+                  sequenceNumber: 1,
+                  origin: 123,
+                  numbers: [{number: CORRECT_NUMBER, uid: 1}],
+                  scheduled: '2014-12-25T15:30:00Z',
+                  delivery_report: true,
+                  validity_period: 143}])
+    expect(response.success?).to eq true
+  end
 end

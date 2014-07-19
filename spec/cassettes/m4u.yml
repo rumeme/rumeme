@@ -869,4 +869,86 @@ http_interactions:
         xmlns=\"http://xml.m4u.com.au/2009\">\n  <result confirmed=\"0\"/>\n</confirmRepliesResponse>\n"
     http_version: 
   recorded_at: Sat, 19 Jul 2014 07:51:23 GMT
+- request:
+    method: post
+    uri: http://xml.m4u.com.au/
+    body:
+      encoding: US-ASCII
+      string: ! "XMLDATA=<sendMessages xmlns=\"http://xml.m4u.com.au/2009\">\n  <authentication>\n
+        \   <userId>USERNAME</userId>\n    <password>SECRET</password>\n
+        \ </authentication>\n  <requestBody>\n    <messages sendMode=\"normal\">\n
+        \     <message format=\"SMS\">\n        <origin>123</origin>\n        <recipients>\n
+        \         <recipient uid=\"1\">456</recipient>\n        </recipients>\n        <deliveryReport>true</deliveryReport>\n
+        \       <validityPeriod>143</validityPeriod>\n        <scheduled>2014-12-25T15:30:00Z</scheduled>\n
+        \       <content>Hello world</content>\n        <tags>\n          <tag name=\"foo\">1</tag>\n
+        \       </tags>\n      </message>\n    </messages>\n  </requestBody>\n</sendMessages>"
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 19 Jul 2014 12:05:54 GMT
+      Server:
+      - Apache
+      Content-Length:
+      - '272'
+      Connection:
+      - close
+      Content-Type:
+      - text/html; charset=UTF-8
+    body:
+      encoding: US-ASCII
+      string: ! "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<faultResponse xmlns=\"http://xml.m4u.com.au/2009\">\n
+        \ <error code=\"invalidDataFormat\">\n    <content>Message tags are not available
+        for accounts that do not have the allowMessageTags feature flag.</content>\n
+        \ </error>\n</faultResponse>\n"
+    http_version: 
+  recorded_at: Sat, 19 Jul 2014 12:05:56 GMT
+- request:
+    method: post
+    uri: http://xml.m4u.com.au/
+    body:
+      encoding: US-ASCII
+      string: ! "XMLDATA=<sendMessages xmlns=\"http://xml.m4u.com.au/2009\">\n  <authentication>\n
+        \   <userId>USERNAME</userId>\n    <password>SECRET</password>\n
+        \ </authentication>\n  <requestBody>\n    <messages sendMode=\"normal\">\n
+        \     <message format=\"SMS\">\n        <origin>123</origin>\n        <recipients>\n
+        \         <recipient uid=\"1\">61410000001</recipient>\n        </recipients>\n
+        \       <deliveryReport>true</deliveryReport>\n        <validityPeriod>143</validityPeriod>\n
+        \       <scheduled>2014-12-25T15:30:00Z</scheduled>\n        <content>Hello
+        world</content>\n      </message>\n    </messages>\n  </requestBody>\n</sendMessages>"
+    headers:
+      Accept:
+      - ! '*/*'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 19 Jul 2014 12:07:14 GMT
+      Server:
+      - Apache
+      Content-Length:
+      - '255'
+      Connection:
+      - close
+      Content-Type:
+      - text/html; charset=UTF-8
+    body:
+      encoding: US-ASCII
+      string: ! "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<sendMessagesResponse
+        xmlns=\"http://xml.m4u.com.au/2009\">\n  <result sent=\"0\" scheduled=\"1\"
+        failed=\"0\">\n    <accountDetails type=\"daily\" creditLimit=\"1089\" creditRemaining=\"1087\"/>\n
+        \ </result>\n</sendMessagesResponse>\n"
+    http_version: 
+  recorded_at: Sat, 19 Jul 2014 12:07:15 GMT
 recorded_with: VCR 2.9.2
