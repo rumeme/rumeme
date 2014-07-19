@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 # Rumeme main module
 module Rumeme
   # Build the XML for the XML API Interface

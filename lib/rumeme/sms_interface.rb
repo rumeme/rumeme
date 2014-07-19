@@ -1,4 +1,3 @@
-# encoding: UTF-8
 require 'net/http'
 require 'net/https'
 
@@ -238,7 +237,7 @@ module Rumeme
     # devices. Voice messages will be read out to the recipient by a
     # text-to-speech software application. The list of messages in the Send
     # Messages request may consist of both SMS and voice messages types and
-    # each message may have multiple recipients. 
+    # each message may have multiple recipients.
     # @param [Array] Array of message Hashes
     # @param [String] send mode. defaults to normal.
     # @example send_messages([

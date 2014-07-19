@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 # @author Hartwig Brandl <code@hartwigbrandl.com>
 module Rumeme
   # handles the responses from MessageMedia
@@ -81,7 +79,7 @@ module Rumeme
     def unscheduled
       (result_attributes['unscheduled'] || '').to_i
     end
-    
+
     # easy access to the result attribute sent
     # @api public
     # @return [Integer] number of sent messages
@@ -90,7 +88,7 @@ module Rumeme
     def sent
       (result_attributes['sent'] || '').to_i
     end
-    
+
     # easy access to the result attribute scheduled
     # @api public
     # @return [Integer] number of scheduled messages
@@ -107,7 +105,7 @@ module Rumeme
     #   meme.failed
     def failed
       (result_attributes['failed'] || '').to_i
-    end 
+    end
 
     # easy access to the result attribute returned
     # @api public

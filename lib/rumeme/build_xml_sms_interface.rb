@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require 'nokogiri'
 
 # Rumeme main module
@@ -170,7 +168,7 @@ module Rumeme
     # devices. Voice messages will be read out to the recipient by a
     # text-to-speech software application. The list of messages in the Send
     # Messages request may consist of both SMS and voice messages types and
-    # each message may have multiple recipients. 
+    # each message may have multiple recipients.
     # @param [Array] Array of message Hashes
     # @param [String] send mode. defaults to normal.
     # @example send_messages([
@@ -190,34 +188,7 @@ module Rumeme
       Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
         body_xml.messages(sendMode: send_mode) do
           messages.each do |message|
-            format = message['format'] || 'SMS'
-            message_element_hash = {format: format}
-            message_element_hash[:sequenceNumber] = message[:sequence_number] if message[:sequence_number]
-            body_xml.message(message_element_hash) do
-              body_xml.origin message[:origin] if message[:origin]
-              body_xml.recipients do
-                if message[:numbers] && !message[:numbers].empty?
-                  message[:numbers].each do |recipient|
-                    if recipient[:uid]
-                      body_xml.recipient recipient[:number], uid: recipient[:uid]
-                    else
-                      body_xml.recipient recipient[:number]
-                    end
-                  end
-                end
-              end
-              body_xml.deliveryReport message[:delivery_report] if message[:delivery_report]
-              body_xml.validityPeriod message[:validity_period] if message[:validity_period]
-              body_xml.scheduled message[:scheduled] if message[:scheduled]
-              body_xml.content message[:content]
-              if message[:tags] && !message[:tags].empty?
-                body_xml.tags do 
-                  message[:tags].each do |tag|
-                    body_xml.tag tag[:value], name: tag[:name]
-                  end
-                end
-              end
-            end
+            build_message(body_xml, message)
           end
         end
       end
@@ -225,6 +196,56 @@ module Rumeme
     end
 
     private
+
+    # helper method for send_messages, builds xml for one message
+    # @param [Nokogiri::XML::Builder] at the position where you want the message inserted
+    # @param [Array] message array from send_messages
+    # @return nothing
+    def build_message(body_xml, message)
+      body_xml.message(message_element_attributes(message)) do
+        body_xml.origin message[:origin] if message[:origin]
+        body_xml.recipients do
+          if message[:numbers] && !message[:numbers].empty?
+            message[:numbers].each do |recipient|
+              if recipient[:uid]
+                body_xml.recipient recipient[:number], uid: recipient[:uid]
+              else
+                body_xml.recipient recipient[:number]
+              end
+            end
+          end
+        end
+        build_optional_message_elements(body_xml, message)
+      end
+    end
+
+    # helper method for build_message, returns attributes for XML element message
+    # @param [Array] message array from send_messages
+    # @return [Hash] Hash of the attrbites for this message based on input array
+    def message_element_attributes(message)
+      format = message['format'] || 'SMS'
+      attributes = { format: format }
+      attributes[:sequenceNumber] = message[:sequence_number] if message[:sequence_number]
+      attributes
+    end
+
+    # helper method for send_message, builds optional XML elements
+    # @param [Nokogiri::XML::Builder] at the position where you want them inserted
+    # @return nothing
+    def build_optional_message_elements(body_xml, message)
+      body_xml.deliveryReport message[:delivery_report] if message[:delivery_report]
+      body_xml.validityPeriod message[:validity_period] if message[:validity_period]
+      body_xml.scheduled message[:scheduled] if message[:scheduled]
+      body_xml.content message[:content]
+      if message[:tags] && !message[:tags].empty?
+        body_xml.tags do
+          message[:tags].each do |tag|
+            body_xml.tag tag[:value], name: tag[:name]
+          end
+        end
+      end
+      body_xml
+    end
 
     # Common code for the element recipients used by (un)block_numbers
     # @param numbers [Integer Array] the number to be unblocked

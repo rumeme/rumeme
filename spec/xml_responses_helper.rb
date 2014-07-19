@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 # HELPER constants
 
 CORRECT_NUMBER = 61_410_000_001

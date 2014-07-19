@@ -21,11 +21,6 @@ Lint/UselessAssignment:
 Style/AccessorMethodName:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: CountComments.
-Style/ClassLength:
-  Max: 103
-
 # Offense count: 4
 Style/Documentation:
   Enabled: false
