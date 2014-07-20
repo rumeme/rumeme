@@ -116,7 +116,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.result_attributes['failed']).to eq '1'
   end
 
-  it 'tests an empty getBlockedNumbersRequest', focus10: true do
+  it 'tests an empty getBlockedNumbersRequest' do
     Rumeme.configuration.mock_response = EMPTY_GET_BLOCKED_NUMBERS_RESPONSE
     sms_interface = Rumeme::SmsInterface.new
     sms_interface.unblock_numbers([CORRECT_NUMBER, CORRECT_NUMBER_2])
@@ -129,7 +129,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.errors).to eq []
   end
 
-  it 'tests a limited getBlockedNumbersRequest', focus: true do
+  it 'tests a limited getBlockedNumbersRequest' do
     Rumeme.configuration.mock_response = LIMITED_GET_BLOCKED_NUMBERS_RESPONSE
     sms_interface = Rumeme::SmsInterface.new
     sms_interface.block_numbers([CORRECT_NUMBER, CORRECT_NUMBER_2])
@@ -199,7 +199,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.errors).to eq []
   end
 
-  it 'tests a failing unblockNumbersRequest', focus: true do
+  it 'tests a failing unblockNumbersRequest' do
     Rumeme.configuration.mock_response = FAILING_UNBLOCK_NUMBERS_RESPONSE
     sms_interface = Rumeme::SmsInterface.new
     response = sms_interface.unblock_numbers([FAILING_NUMBER])
@@ -220,14 +220,14 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
           'creditRemaining' => '1089' } }]
   end
 
-  it 'tests a succeedig confirmReplies request', focus: true do
+  it 'tests a succeedig confirmReplies request' do
     sms_interface = Rumeme::SmsInterface.new
     # confirming invalid replies, nothing to confirm for MessageMedia
     response = sms_interface.confirm_replies([1, 2 , 3 , 4 , 5])
     expect(response.confirmed).to eq 0
   end
 
-  it 'tests a send Message request and delivery report check & confirm', focus: true do
+  it 'tests a send Message request and delivery report check & confirm' do
     sms_interface = Rumeme::SmsInterface.new
     response = sms_interface.xml_send_messages([{ content: 'Hello world',
                 format: 'SMS',
@@ -249,7 +249,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.confirmed).to eq 0
   end
 
-   it 'tests a scheduled send Message request & deleteScheduledMessages request', focus: true do
+   it 'tests a scheduled send Message request & deleteScheduledMessages request' do
     sms_interface = Rumeme::SmsInterface.new
     response = sms_interface.xml_send_messages([{ content: 'Hello world',
                 format: 'SMS',
@@ -268,7 +268,7 @@ describe Rumeme::SmsInterface, vcr: { cassette_name: 'm4u', match_requests_on: [
     expect(response.unscheduled).to eq 2
   end
 
-  it 'tests a send Message request and delivery report', focus: true do
+  it 'tests a send Message request and delivery report' do
     sms_interface = Rumeme::SmsInterface.new
     response = sms_interface.xml_send_messages([{ content: 'Hello world',
                 format: 'SMS',

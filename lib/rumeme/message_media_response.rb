@@ -68,7 +68,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.confirmed
     def confirmed
-      (result_attributes['confirmed']).to_i
+      result_attributes['confirmed'].to_i
     end
 
     # easy access to the result attribute unscheduled
@@ -77,7 +77,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.unscheduled
     def unscheduled
-      (result_attributes['unscheduled']).to_i
+      result_attributes['unscheduled'].to_i
     end
 
     # easy access to the result attribute sent
@@ -86,7 +86,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.sent
     def sent
-      (result_attributes['sent']).to_i
+      result_attributes['sent'].to_i
     end
 
     # easy access to the result attribute scheduled
@@ -95,7 +95,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.scheduled
     def scheduled
-      (result_attributes['scheduled']).to_i
+      result_attributes['scheduled'].to_i
     end
 
     # easy access to the result attribute failed
@@ -104,7 +104,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.failed
     def failed
-      (result_attributes['failed']).to_i
+      result_attributes['failed'].to_i
     end
 
     # easy access to the result attribute returned
@@ -113,7 +113,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.returned
     def returned
-      (result_attributes['returned']).to_i
+      result_attributes['returned'].to_i
     end
 
     # easy access to the result attribute remaining
@@ -122,7 +122,7 @@ module Rumeme
     # @example meme = MessageMediaResponse(xml_response)
     #   meme.remaining
     def remaining
-      (result_attributes['remaining']).to_i
+      result_attributes['remaining'].to_i
     end
   end
 end

@@ -8,7 +8,7 @@ describe Rumeme::BuildXmlSmsInterface do
     Rumeme.configuration.password = 'test'
   end
 
-  it 'builds a correct BlockNumbersRequest', focus: true do
+  it 'builds a correct BlockNumbersRequest' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     numbers = %w(123 456)
     expected_xml = '<blockNumbers xmlns="http://xml.m4u.com.au/2009">
@@ -26,7 +26,7 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml_sms_interface.block_numbers(numbers)).to eq expected_xml
   end
 
-  it 'builds a correct BlockNumbersRequest with UIDs', focus: true do
+  it 'builds a correct BlockNumbersRequest with UIDs' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     numbers = [{ number: '123', uid: 1 }, { number: '456', uid: 2 }]
     expected_xml = '<blockNumbers xmlns="http://xml.m4u.com.au/2009">
@@ -44,7 +44,7 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml_sms_interface.block_numbers(numbers)).to eq expected_xml
   end
 
-  it 'builds a correct UnblockNumbersRequest', focus: true do
+  it 'builds a correct UnblockNumbersRequest' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     numbers = %w(123 456)
     expected_xml = '<unblockNumbers xmlns="http://xml.m4u.com.au/2009">
@@ -135,7 +135,7 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml_sms_interface.confirm_replies([1, 2, 3])).to eq expected_xml
   end
 
-  it 'builds a correct ConfirmReports request', focus2: true do
+  it 'builds a correct ConfirmReports request' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     expect_xml = '<confirmReports xmlns="http://xml.m4u.com.au/2009">
   <authentication>
@@ -172,7 +172,7 @@ describe Rumeme::BuildXmlSmsInterface do
       ).to eq expected_xml
   end
 
-  it 'builds a correct SendMessage request', focus: true do
+  it 'builds a correct SendMessage request' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
                 format: 'SMS',
@@ -213,7 +213,7 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml).to eq expected_xml
   end
 
-  it 'builds a correct SendMessage request without tags', focus: true do
+  it 'builds a correct SendMessage request without tags' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
                 format: 'SMS',
@@ -249,7 +249,7 @@ describe Rumeme::BuildXmlSmsInterface do
     expect(build_xml).to eq expected_xml
   end
 
-  it 'builds a correct SendMessage request without optional arguments', focus: true do
+  it 'builds a correct SendMessage request without optional arguments' do
     build_xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
     build_xml = build_xml_sms_interface.send_messages([{ content: 'Hello world',
                 format: 'SMS',

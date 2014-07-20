@@ -63,7 +63,7 @@ describe Rumeme::MessageMediaResponse do
     expect(response.reports[0]['report'].count).to eq 4
   end
 
-  it 'ensures we get the account details', focus: true do
+  it 'ensures we get the account details' do
     response = Rumeme::MessageMediaResponse.new(CHECK_USER_RESPONSE)
     expect(response.success?).to eq true
     expect(response.account_details).to eq [{
