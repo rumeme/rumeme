@@ -40,7 +40,6 @@ module Rumeme
 
       # post method for the XML interface
       # @api public
-      # @author Hartwig Brandl <code@hartwigbrandl.com>
       # @example Rumeme::MessageMedia.post_xml(the_xml)
       def post_xml(xml)
         if testing
@@ -56,14 +55,12 @@ module Rumeme
 
       # know if we are only testing
       # @api private
-      # @author Hartwig Brandl <code@hartwigbrandl.com>
       def testing
         Rumeme.configuration.testing
       end
 
       # mock a response (usefull for testing)
       # @api private
-      # @author Hartwig Brandl <code@hartwigbrandl.com>
       def mock_response
         Rumeme.configuration.mock_response
       end

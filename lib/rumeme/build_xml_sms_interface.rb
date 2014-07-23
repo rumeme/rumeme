@@ -3,7 +3,6 @@ require 'nokogiri'
 # Rumeme main module
 module Rumeme
   # Build the XML for the XML API Interface
-  # @author Hartwig Brandl <code@hartwigbrandl.com>
   class BuildXmlSmsInterface
     # load credentials from the configuration file
     def initialize(username = nil, password = nil)

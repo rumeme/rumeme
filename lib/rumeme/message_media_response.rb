@@ -1,4 +1,3 @@
-# @author Hartwig Brandl <code@hartwigbrandl.com>
 module Rumeme
   # handles the responses from MessageMedia
   class MessageMediaResponse
