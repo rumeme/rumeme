@@ -27,7 +27,6 @@ module Rumeme
       end
 
       @message_list = []
-      @server_list = %w(smsmaster.m4u.com.au smsmaster1.m4u.com.au smsmaster2.m4u.com.au)
     end
 
     # Add a message to be sent.
@@ -43,15 +42,6 @@ module Rumeme
     # Clear all the messages from the list.
     def clear_messages
       @message_list.clear
-    end
-
-    def open_server_connection(server)
-      port, use_ssl = @secure ? [443, true] : [80, false]
-
-      http_connection = Net::HTTP.new(server, port)
-      http_connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      http_connection.use_ssl = use_ssl
-      http_connection
     end
 
     # Change the password on the local machine and server.
@@ -105,6 +95,169 @@ module Rumeme
       fail BadServerResponse, 'error during sending messages' unless send_messages
     end
 
+    # The Block Numbers request is used to prevent the authenticated account
+    # being able to send messages to the specified numbers in future.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @example block_numbers[61410000001,61410000002] OR
+    #   block_numbers([{number: '61410000001', uid: '1'},
+    #   {number: '61410000002', uid: '2'}])
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def block_numbers(numbers)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.block_numbers(numbers)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Unblock Numbers request is used to remove existing number blocks.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @example unblock_numbers[61410000001,61410000002] OR
+    #   unblock_numbers([{number: '61410000001', uid: '1'},
+    #   {number: '61410000002', uid: '2'}])
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def unblock_numbers(numbers)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.unblock_numbers(numbers)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Get Blocked Numbers request is used retrieve a list of numbers that
+    # are currently blocked for the authenticated account.
+    # @api public
+    # @param numbers [Integer Array] the numbers to be blocked
+    #   if you want to use the UID functionality an Array of Hashes is expected
+    # @param [Integer] Maximum number of results (numbers) to be returned
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def get_blocked_numbers(max_results = false)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.get_blocked_numbers(max_results)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Check Reports request is used to download delivery reports that are
+    # waiting on the gateway. Delivery reports are downloaded for a specific
+    # user account. A delivery report reports the delivery status of a sent
+    # message. Delivery reports may only be obtained for SMS messages not voice
+    # messages and must be requested explicitly in the Send Messages request
+    # (Section 7.4).
+    # Delivery reports will remain marked as unsent and will be downloaded each
+    # time the Check Reports request is made until they are confirmed by the
+    # user as having been received. See Section 7.12 for details on confirming
+    # reports.
+    # @api public
+    # @param [Integer] Maximum number of results (reports) to be returned
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def check_reports(max_results = false)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.check_reports(max_results)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Check User request is used to authenticate a user and obtain their account credit details
+    # @api public
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def check_user
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.check_user
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Confirm Replies request is used to confirm the receipt of reply
+    # messages that were downloaded from the gateway. Replies that are
+    # unconfirmed will be downloaded each time a Check Replies request is
+    # made. When reply messages are confirmed they are marked as sent and will
+    # not be downloaded again. It is not possible for a user to confirm
+    # replies that do not belong to them.
+    # Reply messages must be confirmed on an individual basis. Replies are
+    # specified by their receipt ID. This receipt ID is the same receipt ID
+    # that the reply message was assigned in the Check Replies response. The
+    # receipt ID is specified by the attribute receiptId. See Section 7.7 for
+    # details on the Check Replies response.
+    # @api public
+    # @param [Array] receipt IDs
+    def confirm_replies(receipt_ids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.confirm_replies(receipt_ids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Confirm Reports request is used to confirm the receipt of delivery
+    # reports that were downloaded from the gateway. Delivery reports that are
+    # unconfirmed will be downloaded each time a Check Reports request is made.
+    # When delivery reports are confirmed they are marked as sent and will not
+    # be downloaded again. It is not possible for a user to confirm delivery
+    # reports that do not belong to them. Delivery reports must be confirmed on
+    # an individual basis. Delivery reports are specified by their receipt ID.
+    # This receipt ID is the same receipt ID that the delivery report was
+    # assigned in the Check Reports response. The receipt ID is specified by
+    # the attribute receiptId. See Section 7.9 for details on the Check
+    # Reports response.
+    # @api public
+    # @param [Array] the receipt IDs
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def confirm_reports(receipt_ids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.confirm_reports(receipt_ids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Delete Scheduled Messages request is used to request the unscheduling
+    # of messages that have been submitted to the gateway but are still yet to
+    # be sent. Only messages that were given a scheduled timestamp in the Send
+    # Messages request can be unscheduled. Only messages sent from the given
+    # account can be unscheduled. Messages submitted to the gateway via other
+    # APIs may be deleted via this method.
+    # Messages must be confirmed on an individual basis. Messages are specified
+    # by their message ID. This message ID is the same message ID that was
+    # specified in recipient uid attribute in the Send Messages request.
+    # Messages with an unrecognised message ID will be ignored.
+    # @api public
+    # @param [Array] UIDs of the messages to be unscheduled
+    # @return [Rumeme::MessageMediaResponse] The response object
+    def delete_scheduled_messages(uids)
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.delete_scheduled_messages(uids)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
+    # The Send Messages request is used to send one or more SMS or voice
+    # messages to one or more recipients. The MessageMedia Messaging Web
+    # Service does not place a hard limit on the number of messages that may be
+    # placed in a request but users should be aware that it may be more
+    # efficient to split large batches of messages into multiple requests to
+    # avoid timing out their internet connections. In general, provided the
+    # user has a sufficient internet connection, batches of up to one thousand
+    # messages should be fine. Batches larger than this should be split up into
+    # multiple requests. The XML Interface allows two types of messages to be
+    # sent: SMS and voice. SMS messages may only be sent to mobile devices;
+    # voice messages, on the other hand, may be sent to landlines and mobile
+    # devices. Voice messages will be read out to the recipient by a
+    # text-to-speech software application. The list of messages in the Send
+    # Messages request may consist of both SMS and voice messages types and
+    # each message may have multiple recipients.
+    # @param [Array] Array of message Hashes
+    # @param [String] send mode. defaults to normal.
+    # @example send_messages([
+    #            {content: 'Hello world',
+    #             format: 'SMS',
+    #             sequenceNumber: 1,
+    #             origin: 123,
+    #             numbers: [{number: 456, uid: 1}],
+    #             scheduled: '2014-12-25T15:30:00Z',
+    #             delivery_report: true,
+    #             validity_period: 143,
+    #             tags: [{name: 'foo', value: 1}]
+    #            }]
+    #          )
+    def xml_send_messages(messages, send_mode = 'normal')
+      xml_sms_interface = Rumeme::BuildXmlSmsInterface.new
+      xml = xml_sms_interface.send_messages(messages, send_mode)
+      Rumeme::MessageMedia.post_xml(xml)
+    end
+
     private
 
     def check_message_args(args)
@@ -126,25 +279,9 @@ module Rumeme
     end
 
     def post_data_to_server(data)
-      http_connection = open_server_connection(@server_list[0])
       text_buffer = create_login_string + data
 
-      headers = { 'Content-Length' => text_buffer.length.to_s }
-
-      path = '/'
-
-      resp = http_connection.post(path, text_buffer, headers)
-      data = resp.body
-
-      fail BadServerResponse, 'http response code != 200' unless resp.code.to_i == 200
-
-      if data =~ %r{^.+<TITLE>(.+)</TITLE>.+<BODY>(.+)</BODY>.+}m
-        parsed_title, parsed_body = $1, $2
-      else
-        fail BadServerResponse, 'not html'
-      end
-
-      fail BadServerResponse, 'bad title' unless parsed_title == 'M4U SMSMASTER'
+      _parsed_title, parsed_body = Rumeme::MessageMedia.post_data_to_server(text_buffer)
 
       response_message = parsed_body.strip
 
