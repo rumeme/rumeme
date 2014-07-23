@@ -6,6 +6,8 @@ module Rumeme
     attr_accessor :use_message_id
     attr_accessor :secure
     attr_accessor :replies_auto_confirm
+    attr_accessor :testing
+    attr_accessor :mock_response
 
     #
     # possible values
@@ -18,5 +20,9 @@ module Rumeme
       @replies_auto_confirm = true
       @long_messages_strategy = :send
     end
+
+    PLAIN_TEXT_SERVERS = %w(smsmaster.m4u.com.au smsmaster1.m4u.com.au smsmaster2.m4u.com.au)
+
+    XML_SERVERS = %w(xml.m4u.com.au)
   end
 end

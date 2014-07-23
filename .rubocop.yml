@@ -15,3 +15,6 @@ Style/CaseIndentation:
 # Don't require utf-8 encoding comment at the top of every file
 Encoding:
   Enabled: false
+
+Style/ClassLength:
+  Max: 150
