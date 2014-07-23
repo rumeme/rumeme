@@ -46,10 +46,7 @@ module Rumeme
     # @return [String] the XML
     def get_blocked_numbers(max_results = false)
       xml = build_xml('getBlockedNumbers')
-      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
-        body_xml.maximumRecipients max_results if max_results
-      end
-      xml.doc.root.to_xml
+      common_code_for_max_results(xml, :maximumRecipients, max_results)
     end
 
     # The Check Reports request is used to download delivery reports that are
@@ -67,10 +64,7 @@ module Rumeme
     # @return [String] the XML
     def check_reports(max_results = false)
       xml = build_xml('checkReports')
-      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
-        body_xml.maximumReports max_results if max_results
-      end
-      xml.doc.root.to_xml
+      common_code_for_max_results(xml, :maximumReports, max_results)
     end
 
     # The Check User request is used to authenticate a user and obtain their account credit details
@@ -95,14 +89,7 @@ module Rumeme
     # @param [Array] receipt IDs
     def confirm_replies(receipt_ids)
       xml = build_xml('confirmReplies')
-      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
-        body_xml.replies do
-          receipt_ids.each do |receipt_id|
-            body_xml.reply(receiptId: receipt_id)
-          end
-        end
-      end
-      xml.doc.root.to_xml
+      common_code_array_to_xml(xml, :replies, :reply, 'receiptId', receipt_ids)
     end
 
     # The Confirm Reports request is used to confirm the receipt of delivery
@@ -121,14 +108,7 @@ module Rumeme
     # @return [String] the XML
     def confirm_reports(receipt_ids)
       xml = build_xml('confirmReports')
-      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
-        body_xml.reports do
-          receipt_ids.each do |receipt_id|
-            body_xml.report(receiptId: receipt_id)
-          end
-        end
-      end
-      xml.doc.root.to_xml
+      common_code_array_to_xml(xml, :reports, :report, 'receiptId', receipt_ids)
     end
 
     # The Delete Scheduled Messages request is used to request the unscheduling
@@ -143,14 +123,7 @@ module Rumeme
     # Messages with an unrecognised message ID will be ignored.
     def delete_scheduled_messages(uids)
       xml = build_xml('deleteScheduledMessages')
-      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
-        body_xml.messages do
-          uids.each do |uid|
-            body_xml.message(messageId: uid)
-          end
-        end
-      end
-      xml.doc.root.to_xml
+      common_code_array_to_xml(xml, :messages, :message, 'messageId', uids)
     end
 
     # The Send Messages request is used to send one or more SMS or voice
@@ -265,6 +238,38 @@ module Rumeme
             else
               body_xml.recipient number
             end
+          end
+        end
+      end
+      xml.doc.root.to_xml
+    end
+
+    # common code for max_results, will add an xml element named after the
+    # param element with the value of max_results if max_results is set/true
+    # @api private
+    # @param [Nokogiri::XML::Builder] the current state of the xml build
+    # @param [Symbol] the name of the element
+    # @param [Integer] the integer value to be set for that element
+    # @return [String] the finished xml
+    def common_code_for_max_results(xml, element, max_results)
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.send element, max_results if max_results
+      end
+      xml.doc.root.to_xml
+    end
+
+    # common code that will split an array into xml child elements
+    # @param [Nokogiri::XML::Builder] the current state of the xml build
+    # @param [Symbol] the name of the mother element
+    # @param [Symbol] the name used for all the child elements
+    # @param [String] the name of attribute key
+    # @param [Array] attribute values of the child elements
+    # @return [String] the finished XML
+    def common_code_array_to_xml(xml, element, child_element, key, objects)
+      Nokogiri::XML::Builder.with(xml.doc.at('requestBody')) do |body_xml|
+        body_xml.send element do
+          objects.each do |object|
+            body_xml.send child_element, key => object
           end
         end
       end
